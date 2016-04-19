@@ -18,6 +18,12 @@ int currentMotion; //the current movement the car is doing;
 #define LEFT 4
 #define RIGHT 5
 
+//defining sensors numbers and location in array
+#define SENFL 0
+#define SENFH 1
+#define SENL 2
+#define SENR 3
+
 int carSpeed = 0; //with modulation we control the speed of the car
 
 // the setup function runs once when you press reset or power the board
@@ -30,6 +36,9 @@ void setup() {
 	//DDRB  = B nog niet veranderen zie ppt slide 4 audio-signaalbewerking
 
 	fillSensors(5);
+
+	//fill in currentmotion
+	currentMotion = STOP;
 }
 
 // the loop function runs over and over again until power down or reset
@@ -99,6 +108,32 @@ void interpret_data() {
 	//keep a history of sensor data. if a sudden if a sudden value goes to -1 panick(a stop) depending on the current moveset thats being performed
 	//
 #define CLOSEDISTANCE 10;
+	
+	if (currentMotion == STOP)
+	{
+		//geef voorkeur aan FOREWARD
+
+	}
+	else if (currentMotion == FOREWARD)
+	{
+		//geef voorkeur aan de huidige motion
+	}
+	else if(currentMotion == BACKWARDS)
+	{
+
+	}
+	else if (currentMotion == LEFT)
+	{
+
+	}
+	else if (currentMotion == RIGHT)
+	{
+
+	}
+	else
+	{
+		currentMotion = STOP;
+	}
 
 
 }
