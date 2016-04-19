@@ -4,17 +4,31 @@
  Author:	jonathan
 */
 
-const prog_uint8_t OrDDRD[1][8] = { 0,0,0,0,0,0,0,0 };
+const prog_uint8_t OrDDRD[1][8] = { 0,1,0,1,0,1,1,0 };
 const prog_uint8_t OrDDRB[1][8] = { 0,0,0,0,0,0,0,0 };
 
 int sensorDataEcho[4] = { -1,-1,-1,-1 }; //containers for holding the sensor value
 int sensorEchoPin[4]; //hardcode these pins
 int sensorTrigPin[4]; //hardcode these pins
 
+int currentMotion; //the current movement the car is doing;
+#define FOREWARD 1
+#define STOP 2
+#define BACKWARDS 3
+#define LEFT 4
+#define RIGHT 5
+
+int carSpeed = 0; //with modulation we control the speed of the car
+
 // the setup function runs once when you press reset or power the board
 void setup() {
-	//set DDRD(0-7) to select input and output pins
+	
+	//set DDRD(0-7) to select input and output pins 0 = input 1 = output
+	DDRD = B01010110;
+
 	//set DDRB(8-13) to select input and output pins
+	//DDRB  = B nog niet veranderen zie ppt slide 4 audio-signaalbewerking
+
 	fillSensors(5);
 }
 
@@ -81,6 +95,11 @@ int echo(int echoPin, int trigPin) {
 }
 
 void interpret_data() {
+	//some thoughts
+	//keep a history of sensor data. if a sudden if a sudden value goes to -1 panick(a stop) depending on the current moveset thats being performed
+	//
+#define CLOSEDISTANCE 10;
+
 
 }
 
