@@ -21,14 +21,28 @@ void setup() {
 // the loop function runs over and over again until power down or reset
 void loop() {
   
+	interpret_data(); 
+
+	movement(); 
+
+	fillSensors(5); //check all sensors
+
 }
 
 void fillSensors(int code) {
 
-	for (int i = 0; i < sizeof(sensorDataEcho)/sizeof(sensorDataEcho[0]); i++)
+	if (code == 5)
 	{
-		sensorDataEcho[i] = echo(sensorEchoPin[i],sensorTrigPin[4]);
+		for (int i = 0; i < sizeof(sensorDataEcho)/sizeof(sensorDataEcho[0]); i++)
+		{
+			sensorDataEcho[i] = echo(sensorEchoPin[i],sensorTrigPin[i]);
+		}
 	}
+	else
+	{
+			sensorDataEcho[code] = echo(sensorEchoPin[code], sensorTrigPin[code]);
+	}
+
 }
 
 int echo(int echoPin, int trigPin) {
@@ -63,5 +77,13 @@ int echo(int echoPin, int trigPin) {
 		turn LED OFF to indicate successful reading. */
 		return(distance);
 	}
+
+}
+
+void interpret_data() {
+
+}
+
+void movement() {
 
 }
