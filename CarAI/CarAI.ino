@@ -1,3 +1,16 @@
+//Pins motor
+int intML1 = 6;     //Pin motor Left Front
+int intML2 = 7;     //Pin motor Left Backwards
+int intMLE = 10;    //Pin motor Left Enable
+int intMR1 = 8;    //Pin Motor Right Front
+int intMR2 = 9;    //Pin Motor Right Backwards
+int intMRE = 11;     //Pin Motor Right Enable
+
+//State motors;
+uint8_t ml1 = LOW;    //Left motor 1  A1
+uint8_t ml2 = LOW;    //Left motor 2  A2
+uint8_t mr1 = LOW;    //Right motor 1 B1
+uint8_t mr2 = LOW;    //Right motor 2 B2
 
 const prog_uint8_t OrDDRD[1][8] = { 0,1,0,1,0,1,1,0 };
 const prog_uint8_t OrDDRB[1][8] = { 0,0,0,0,0,0,0,0 };
@@ -21,9 +34,15 @@ int currentMotion; //the current movement the car is doing;
 
 int carSpeed = 0; //with modulation we control the speed of the car
 
+#define CLOSEDISTANCE 10;
+
 // the setup function runs once when you press reset or power the board
 void setup() {
-	
+  pinMode(intML1, OUTPUT);
+  pinMode(intML2, OUTPUT);
+  pinMode(intMR1, OUTPUT);
+  pinMode(intMR2, OUTPUT);
+  
 	//set DDRD(0-7) to select input and output pins 0 = input 1 = output
 	DDRD = B01010110;
 
@@ -38,9 +57,12 @@ void setup() {
 
 // the loop function runs over and over again until power down or reset
 void loop() {
-  
+  //check sensor data + calculate where to go
+  echoFront(1, 2);
+  echoSide(1, 2, 3, 4);
+  //handle movement command
 	interpret_data(); 
-
+  //drive
 	movement(); 
 
 	fillSensors(5); //check all sensors
@@ -48,7 +70,7 @@ void loop() {
 }
 
 void fillSensors(int code) {
-
+//echo has to be replaced by echoFront/echoSide
 	if (code == 5)
 	{
 		for (int i = 0; i < sizeof(sensorDataEcho)/sizeof(sensorDataEcho[0]); i++)
@@ -91,14 +113,17 @@ int echoFront(int echoPin, int trigPin) {
     int direction = echoSide(1, 2, 3, 4); //actual pins will be different
     if (direction == 1) {
       //Turn Left
+      currentMotion = LEFT;
       }
     if (direction == 2) {
       //Turn Right  
+      currentMotion = RIGHT;
         }
     }
     else {
         return(distance);
      //Go Straight
+     currentMotion = FORWARD;
     }
 }
  
@@ -125,7 +150,7 @@ int echoSide(int echoPinLeft, int echoPinRight, int trigPinLeft, int trigPinRigh
   distanceLeft = durationLeft / 58.2;
   distanceRight = durationRight / 58.2;
  
-  if (distanceLeft > 20 && distanceRight > 20) {
+  if (distanceLeft > CLOSEDISTANCE && distanceRight > CLOSEDISTANCE) {
       if (distanceLeft > distanceRight) {
       //More space to the left so go left
       //return left
@@ -141,16 +166,18 @@ int echoSide(int echoPinLeft, int echoPinRight, int trigPinLeft, int trigPinRigh
       return(2);
       }    
     }
-  else if (distanceLeft <= 20){
+  else if (distanceLeft <= CLOSEDISTANCE){
       //Object spotted close to left sensor
       //Turn Right
+      currentMotion = RIGHT;
     }  
-  else if (distanceRight <= 20) {
+  else if (distanceRight <= CLOSEDISTANCE) {
      //Object spotted close to right sensor
      //Turn Left
+     currentMotion = LEFT;
     }
   else {
-   
+     currentMotion = STOP;
     }  
 }
 
@@ -158,38 +185,54 @@ void interpret_data() {
 	//some thoughts
 	//keep a history of sensor data. If a sudden value goes to -1 panic(a stop) depending on the current move set that's being performed
 	//
-#define CLOSEDISTANCE 10;
 	
 	if (currentMotion == STOP)
 	{
-		//geef voorkeur aan FOREWARD
-
+		ml1 = LOW;
+    ml2 = LOW;
+    mr1 = LOW;
+    mr2 = LOW;
 	}
 	else if (currentMotion == FOREWARD)
 	{
-		//geef voorkeur aan de huidige motion
+		ml1 = HIGH;
+    ml2 = LOW;
+    mr1 = HIGH;
+    mr2 = LOW;
 	}
 	else if(currentMotion == BACKWARDS)
 	{
-
+    ml1 = LOW;
+    ml2 = HIGH;
+    mr1 = LOW;
+    mr2 = HIGH;
 	}
 	else if (currentMotion == LEFT)
 	{
-
+    ml1 = HIGH;
+    ml2 = LOW;
+    mr1 = LOW;
+    mr2 = HIGH;
 	}
 	else if (currentMotion == RIGHT)
 	{
-
+    ml1 = LOW;
+    ml2 = HIGH;
+    mr1 = HIGH;
+    mr2 = LOW;
 	}
 	else
 	{
 		currentMotion = STOP;
 	}
-
-
+  
 }
 
 void movement() {
-  echoFront(1, 2); //actual pins will be different
-  echoSide(3, 4, 5, 6);
+  //drive
+  digitalWrite(intML1, ml1);
+  digitalWrite(intML2, ml2);
+  digitalWrite(intMR1, mr1);
+  digitalWrite(intMR2, mr2);
+  
 }
