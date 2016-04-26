@@ -1,8 +1,3 @@
-/*
- Name:		CarAI.ino
- Created:	4/19/2016 2:02:54 PM
- Author:	jonathan
-*/
 
 const prog_uint8_t OrDDRD[1][8] = { 0,1,0,1,0,1,1,0 };
 const prog_uint8_t OrDDRB[1][8] = { 0,0,0,0,0,0,0,0 };
@@ -161,7 +156,7 @@ int echoSide(int echoPinLeft, int echoPinRight, int trigPinLeft, int trigPinRigh
 
 void interpret_data() {
 	//some thoughts
-	//keep a history of sensor data. if a sudden if a sudden value goes to -1 panick(a stop) depending on the current moveset thats being performed
+	//keep a history of sensor data. If a sudden value goes to -1 panic(a stop) depending on the current move set that's being performed
 	//
 #define CLOSEDISTANCE 10;
 	
@@ -195,5 +190,6 @@ void interpret_data() {
 }
 
 void movement() {
-
+  echoFront(1, 2); //actual pins will be different
+  echoSide(3, 4, 5, 6);
 }
