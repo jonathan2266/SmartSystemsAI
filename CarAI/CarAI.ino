@@ -68,39 +68,95 @@ void fillSensors(int code) {
 
 }
 
-int echo(int echoPin, int trigPin) {
-
-	//pinMode(trigPin, OUTPUT);  //<-- should already have happened at the start of program
-	//pinMode(echoPin, INPUT);
-
-	int maximumRange = 200; // Maximum range needed
-	int minimumRange = 0; // Minimum range needed
-	long duration, distance; // Duration used to calculate distance
-	/* The following trigPin/echoPin cycle is used to determine the
-	distance of the nearest object by bouncing soundwaves off of it. */
-	digitalWrite(trigPin, LOW); //fix digitalwrite should be replace.
-	delayMicroseconds(2);
-
-	digitalWrite(trigPin, HIGH);
-	delayMicroseconds(10);
-
-	digitalWrite(trigPin, LOW);
-	duration = pulseIn(echoPin, HIGH);
-
-	//Calculate the distance (in cm) based on the speed of sound.
-	distance = duration / 58.2;
-
-	if (distance >= maximumRange || distance <= minimumRange) {
-		/* Send a negative number to computer and Turn LED ON
-		to indicate "out of range" */
-		return(-1);
-	}
-	else {
-		/* Send the distance to the computer using Serial protocol, and
-		turn LED OFF to indicate successful reading. */
-		return(distance);
-	}
-
+int echoFront(int echoPin, int trigPin) {
+ 
+    //pinMode(trigPin, OUTPUT);  //<-- should already have happened at the start of program
+    //pinMode(echoPin, INPUT);
+ 
+    //int maximumRange = 200; // Maximum range needed
+    int minimumRange = 20; // Minimum range needed
+    long duration, distance; // Duration used to calculate distance
+    /* The following trigPin/echoPin cycle is used to determine the
+    distance of the nearest object by bouncing soundwaves off of it. */
+    digitalWrite(trigPin, LOW); //fix digitalwrite should be replace.
+    delayMicroseconds(2);
+ 
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+ 
+    digitalWrite(trigPin, LOW);
+    duration = pulseIn(echoPin, HIGH);
+ 
+    //Calculate the distance (in cm) based on the speed of sound.
+    distance = duration / 58.2;
+ 
+    if (distance <= minimumRange) {
+    //Front sensor encountered wall or car
+        return(-1);
+    int direction = echoSide(1, 2, 3, 4); //actual pins will be different
+    if (direction == 1) {
+      //Turn Left
+      }
+    if (direction == 2) {
+      //Turn Right  
+        }
+    }
+    else {
+        return(distance);
+     //Go Straight
+    }
+}
+ 
+int echoSide(int echoPinLeft, int echoPinRight, int trigPinLeft, int trigPinRight) {
+  // This method is to determine whether to turn left or right
+  // when an object is detected in method echoFront
+  long distanceLeft, distanceRight, durationLeft, durationRight;
+ 
+  digitalWrite(trigPinLeft, LOW);
+  digitalWrite(trigPinRight, LOW);
+  delayMicroseconds(2);
+ 
+  digitalWrite(trigPinLeft, HIGH);
+  digitalWrite(trigPinRight, HIGH);
+  delayMicroseconds(10);
+ 
+  digitalWrite(trigPinLeft, LOW);
+  digitalWrite(trigPinRight, LOW);
+ 
+  durationLeft = pulseIn(echoPinLeft, HIGH);
+  durationRight = pulseIn(echoPinRight, HIGH);
+ 
+  //Calculate the distance (in cm) based on the speed of sound.
+  distanceLeft = durationLeft / 58.2;
+  distanceRight = durationRight / 58.2;
+ 
+  if (distanceLeft > 20 && distanceRight > 20) {
+      if (distanceLeft > distanceRight) {
+      //More space to the left so go left
+      //return left
+      return(1);
+      }
+    else if (distanceLeft < distanceRight) {
+      //More space to the right so go right
+      //return right
+      return(2);
+      }  
+    else {
+      //return right
+      return(2);
+      }    
+    }
+  else if (distanceLeft <= 20){
+      //Object spotted close to left sensor
+      //Turn Right
+    }  
+  else if (distanceRight <= 20) {
+     //Object spotted close to right sensor
+     //Turn Left
+    }
+  else {
+   
+    }  
 }
 
 void interpret_data() {
