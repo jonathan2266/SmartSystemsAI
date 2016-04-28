@@ -1,4 +1,6 @@
 #pragma once
+#include "Arduino.h"
+
 class sensor
 {
 public:
@@ -9,6 +11,7 @@ public:
 	uint8_t SenExtra = 0x3;
 
 	void fillSensors(uint8_t code);
+	uint8_t GetSensorData(uint8_t number);
 	~sensor();
 
 private:

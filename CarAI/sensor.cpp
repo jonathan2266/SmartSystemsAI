@@ -25,6 +25,11 @@ void sensor::fillSensors(uint8_t code) {
 
 }
 
+uint8_t sensor::GetSensorData(uint8_t number)
+{
+	return uint8_t(sensorDataEcho[number]);
+}
+
 uint16_t sensor::echo(uint8_t echoPin, uint8_t trigPin)
 {
 	uint8_t maximumRange = 200; // Maximum range needed
