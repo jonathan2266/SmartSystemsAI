@@ -1,19 +1,25 @@
-//Pins motor
-int intML1 = 6;     //Pin motor Left Front
-int intML2 = 7;     //Pin motor Left Backwards
-int intMLE = 10;    //Pin motor Left Enable
-int intMR1 = 8;    //Pin Motor Right Front
-int intMR2 = 9;    //Pin Motor Right Backwards
-int intMRE = 11;     //Pin Motor Right Enable
+#include "motor.h"
+#include "Arduino.h"
+
+motor engine(10, 11, 5, 6);
+
+int intML1 = 10;     //Pin motor Left Front
+int intML2 = 11;     //Pin motor Left Backwards
+int intMR1 = 5;    //Pin Motor Right Front
+int intMR2 = 6;    //Pin Motor Right Backwards
+
 
 //State motors;
-uint8_t ml1 = LOW;    //Left motor 1  A1
+uint8_t ml1 = LOW;    //Left motor 1  A1    Maybe its better to use 0 and 1   to use with sbi and cbi
 uint8_t ml2 = LOW;    //Left motor 2  A2
 uint8_t mr1 = LOW;    //Right motor 1 B1
 uint8_t mr2 = LOW;    //Right motor 2 B2
 
-const prog_uint8_t OrDDRD[1][8] = { 0,1,0,1,0,1,1,0 };
+const prog_uint8_t OrDDRD[1][8] = { 0,1,0,1,0,1,1,0 };  // <-- pins motor are included in these
 const prog_uint8_t OrDDRB[1][8] = { 0,0,0,0,0,0,0,0 };
+
+#define sbi(PORT, bit) (PORT != 1 << bit);     //set a bit
+#define cbi(PORT, bit) (PORT &= ~(1 << bit));  //clear a bit
 
 int sensorDataEcho[4] = { -1,-1,-1,-1 }; //containers for holding the sensor value
 int sensorEchoPin[4]; //hardcode these pins
@@ -22,29 +28,25 @@ int sensorTrigPin[4]; //hardcode these pins
 int currentMotion; //the current movement the car is doing;
 #define FOREWARD 1
 #define STOP 2
-#define BACKWARDS 3
+//#define BACKWARDS 3
 #define LEFT 4
 #define RIGHT 5
 
 //defining sensors numbers and location in array
-#define SENFL 0
-#define SENFH 1
-#define SENL 2
-#define SENR 3
+#define SENF 0
+#define SENL 1
+#define SENR 2
+#define SENUN 3
 
 int carSpeed = 0; //with modulation we control the speed of the car
 
-#define CLOSEDISTANCE 10;
+#define CLOSEDISTANCE 10
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-  pinMode(intML1, OUTPUT);
-  pinMode(intML2, OUTPUT);
-  pinMode(intMR1, OUTPUT);
-  pinMode(intMR2, OUTPUT);
-  
+	
 	//set DDRD(0-7) to select input and output pins 0 = input 1 = output
-	DDRD = B01010110;
+	//DDRD = B01010110;
 
 	//set DDRB(8-13) to select input and output pins
 	//DDRB  = B nog niet veranderen zie ppt slide 4 audio-signaalbewerking
@@ -75,12 +77,12 @@ void fillSensors(int code) {
 	{
 		for (int i = 0; i < sizeof(sensorDataEcho)/sizeof(sensorDataEcho[0]); i++)
 		{
-			sensorDataEcho[i] = echo(sensorEchoPin[i],sensorTrigPin[i]);
+			//sensorDataEcho[i] = echo(sensorEchoPin[i],sensorTrigPin[i]);
 		}
 	}
 	else
 	{
-			sensorDataEcho[code] = echo(sensorEchoPin[code], sensorTrigPin[code]);
+			//sensorDataEcho[code] = echo(sensorEchoPin[code], sensorTrigPin[code]);
 	}
 
 }
@@ -123,7 +125,7 @@ int echoFront(int echoPin, int trigPin) {
     else {
         return(distance);
      //Go Straight
-     currentMotion = FORWARD;
+		currentMotion = FOREWARD;
     }
 }
  
@@ -189,37 +191,37 @@ void interpret_data() {
 	if (currentMotion == STOP)
 	{
 		ml1 = LOW;
-    ml2 = LOW;
-    mr1 = LOW;
-    mr2 = LOW;
+		ml2 = LOW;
+		mr1 = LOW;
+		mr2 = LOW;
 	}
 	else if (currentMotion == FOREWARD)
 	{
 		ml1 = HIGH;
-    ml2 = LOW;
-    mr1 = HIGH;
-    mr2 = LOW;
+		ml2 = LOW;
+		mr1 = HIGH;
+		mr2 = LOW;
 	}
-	else if(currentMotion == BACKWARDS)
-	{
-    ml1 = LOW;
-    ml2 = HIGH;
-    mr1 = LOW;
-    mr2 = HIGH;
-	}
+	//else if(currentMotion == BACKWARDS)
+	//{
+	//	ml1 = LOW;
+	//	ml2 = HIGH;
+	//	mr1 = LOW;
+	//	mr2 = HIGH;
+	//}
 	else if (currentMotion == LEFT)
 	{
-    ml1 = HIGH;
-    ml2 = LOW;
-    mr1 = LOW;
-    mr2 = HIGH;
+		ml1 = HIGH;
+		ml2 = LOW;
+		mr1 = LOW;
+		mr2 = HIGH;
 	}
 	else if (currentMotion == RIGHT)
 	{
-    ml1 = LOW;
-    ml2 = HIGH;
-    mr1 = HIGH;
-    mr2 = LOW;
+		ml1 = LOW;
+		ml2 = HIGH;
+		mr1 = HIGH;
+		mr2 = LOW;
 	}
 	else
 	{
@@ -230,7 +232,7 @@ void interpret_data() {
 
 void movement() {
   //drive
-  digitalWrite(intML1, ml1);
+  digitalWrite(intML1, ml1);  // <-- using digiWrite is too slow
   digitalWrite(intML2, ml2);
   digitalWrite(intMR1, mr1);
   digitalWrite(intMR2, mr2);
