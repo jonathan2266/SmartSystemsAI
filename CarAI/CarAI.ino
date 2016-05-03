@@ -1,5 +1,6 @@
 #include "motor.h"
 #include "sensor.h"
+#include "ai.h"
 #include "Arduino.h"
 
 motor engine(10, 11, 5, 6);
@@ -34,10 +35,16 @@ void setup() {
 
 // the loop function runs over and over again until power down or reset
 void loop() {
+	//test
+	engine.LeftMotor(200, engine.FORWARD);
+	engine.RightMotor(200, engine.FORWARD);
+
+
+
   //check sensor data + calculate where to go
 	
   //handle movement command
-	interpret_data(); 
+	//interpret_data(); 
   //drive
 	//movement(); 
 

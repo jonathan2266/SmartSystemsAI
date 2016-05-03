@@ -1,5 +1,7 @@
 #include "motor.h"
 
+#define MAXPWM 512
+
 motor::motor(int pA1, int pA2, int pB1, int pB2)
 {
 	motorPins[0] = pA1;
@@ -17,7 +19,7 @@ void motor::motorCombined(uint16_t speed, uint16_t direction, uint16_t side)
 
 	if (direction == FORWARD)
 	{
-		if (speed == 1024)
+		if (speed == MAXPWM)
 		{
 			digitalWrite(motorPins[0 + side], HIGH);
 			digitalWrite(motorPins[1 + side], LOW);
@@ -30,7 +32,7 @@ void motor::motorCombined(uint16_t speed, uint16_t direction, uint16_t side)
 	}
 	if (direction == motor::BACKWARDS)
 	{
-		if (speed == 1024)
+		if (speed == MAXPWM)
 		{
 			digitalWrite(motorPins[0 + side], LOW);
 			digitalWrite(motorPins[1 + side], HIGH);
