@@ -4,6 +4,7 @@
 class motor
 {
 public:
+	void setup();
 	motor(int pA1, int pA2, int pB1, int pB2);
 	void LeftMotor(uint16_t speed, uint16_t direction);
 	void RightMotor(uint16_t speed, uint16_t direction); //see the uit16 def
@@ -13,6 +14,6 @@ public:
 
 private:
 	prog_uint16_t motorPins[4];
-	void motorCombined(uint16_t speed, uint16_t direction, uint16_t side);
+	void motorCombined(uint8_t speed, uint16_t direction, uint8_t side);
 };
 

@@ -1,6 +1,6 @@
 #include "motor.h"
 
-#define MAXPWM 512
+#define MAXPWM 255
 
 motor::motor(int pA1, int pA2, int pB1, int pB2)
 {
@@ -8,21 +8,29 @@ motor::motor(int pA1, int pA2, int pB1, int pB2)
 	motorPins[1] = pA2;
 	motorPins[2] = pB1;
 	motorPins[3] = pB2;
-	for (size_t i = 0; i < sizeof(motorPins)/sizeof(motorPins[0]); i++)
+
+}
+
+void motor::setup() {
+
+	for (size_t i = 0; i < sizeof(motorPins) / sizeof(motorPins[0]); i++)
 	{
 		pinMode(motorPins[i], OUTPUT);
 	}
 }
 
-void motor::motorCombined(uint16_t speed, uint16_t direction, uint16_t side)
+void motor::motorCombined(uint8_t speed, uint16_t direction, uint8_t side)
 {
+	Serial.println(sizeof(motorPins) / sizeof(motorPins[0]));
 
 	if (direction == FORWARD)
 	{
 		if (speed == MAXPWM)
 		{
+			Serial.println((motorPins[1 + side]));
 			digitalWrite(motorPins[0 + side], HIGH);
 			digitalWrite(motorPins[1 + side], LOW);
+
 		}
 		else
 		{

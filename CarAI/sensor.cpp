@@ -21,6 +21,10 @@ void sensor::fillSensors(uint8_t code) {
 	else
 	{
 		sensorDataEcho[code] = echo(sensorEchoPin[code], sensorTrigPin[code]);
+		for (size_t i = 0; i < 4; i++)
+		{
+			Serial.println(sensorDataEcho[i]);
+		}
 	}
 
 }
@@ -30,11 +34,11 @@ uint8_t sensor::GetSensorData(uint8_t number)
 	return uint8_t(sensorDataEcho[number]);
 }
 
-uint16_t sensor::echo(uint8_t echoPin, uint8_t trigPin)
+int sensor::echo(uint8_t echoPin, uint8_t trigPin)
 {
 	uint8_t maximumRange = 200; // Maximum range needed
 	uint8_t minimumRange = 0; // Minimum range needed
-	uint16_t duration, distance; // Duration used to calculate distance
+	int duration, distance; // Duration used to calculate distance
 
 	digitalWrite(trigPin, LOW);
 	delayMicroseconds(2);
@@ -51,12 +55,15 @@ uint16_t sensor::echo(uint8_t echoPin, uint8_t trigPin)
 	if (distance >= maximumRange || distance <= minimumRange) {
 		/* Send a negative number to computer and Turn LED ON
 		to indicate "out of range" */
-		return uint16_t(-1);
+		Serial.println("maxVal sensor");
+		Serial.println(distance);
+		return int(-1);
 	}
 	else {
 		/* Send the distance to the computer using Serial protocol, and
 		turn LED OFF to indicate successful reading. */
-		return uint16_t(distance);
+		Serial.println(distance);
+		return int(distance);
 	}
 }
 

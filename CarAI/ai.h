@@ -6,5 +6,7 @@ class ai
 public:
 	ai();
 	~ai();
+	void setup();
+	void start();
 };
 
