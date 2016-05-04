@@ -1,5 +1,8 @@
 #pragma once
 #include "Arduino.h"
+#include "ai.h"
+#include "sensor.h"
+#include "motor.h"
 
 class ai
 {

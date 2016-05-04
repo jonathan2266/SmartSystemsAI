@@ -102,11 +102,11 @@ extern "C" void __cxa_pure_virtual() {;}
 #define portOutputRegister(P)
 #define portInputRegister(P)
 #define portModeRegister(P)
-#include <..\CarAI\CarAI.ino>
-#include <..\CarAI\ai.cpp>
-#include <..\CarAI\ai.h>
-#include <..\CarAI\motor.cpp>
-#include <..\CarAI\motor.h>
-#include <..\CarAI\sensor.cpp>
-#include <..\CarAI\sensor.h>
+#include <CarAI.ino>
+#include <ai.cpp>
+#include <ai.h>
+#include <motor.cpp>
+#include <motor.h>
+#include <sensor.cpp>
+#include <sensor.h>
 #endif

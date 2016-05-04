@@ -2,7 +2,6 @@
 #include "sensor.h"
 #include "ai.h"
 #include "Arduino.h"
-#include "sam.h"
 
 ai robot;
 
@@ -17,21 +16,19 @@ int currentMotion; //the current movement the car is doing;
 #define LEFT 4
 #define RIGHT 5
 
-int carSpeed = 0; //with modulation we control the speed of the car
 
 #define CLOSEDISTANCE 10
 
 void setup() {
-
 	Serial.begin(9600);
+	Serial.println("setup");
 	robot.setup();
 
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() {
-	//test
-
+	Serial.println("loop");
 	robot.start();
 
 }

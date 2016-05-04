@@ -21,13 +21,11 @@ void motor::setup() {
 
 void motor::motorCombined(uint8_t speed, uint16_t direction, uint8_t side)
 {
-	Serial.println(sizeof(motorPins) / sizeof(motorPins[0]));
 
 	if (direction == FORWARD)
 	{
 		if (speed == MAXPWM)
 		{
-			Serial.println((motorPins[1 + side]));
 			digitalWrite(motorPins[0 + side], HIGH);
 			digitalWrite(motorPins[1 + side], LOW);
 
