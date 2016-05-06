@@ -18,7 +18,9 @@ private:
 	uint16_t* __sensorEchoPin;
 	uint16_t* __sensorTrigPin;
 	uint8_t __sensorDataEcho[4] = { -1,-1,-1,-1 };
+	uint32_t sensorCall[4];
 
-	int echo(uint8_t echoPin, uint8_t trigPin);
+	uint8_t echo(uint8_t echoPin, uint8_t trigPin);
+	void checkAge(uint8_t number);
 };
 

@@ -21,6 +21,6 @@ private:
 	void engineForward(uint8_t speed);
 
 	uint32_t snapshot;
-	int sensorData[4] = {-1,-1,-1,-1};
+	uint8_t sensorData[4] = {255,255,255,255};
 };
 

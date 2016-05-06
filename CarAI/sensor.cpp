@@ -16,6 +16,8 @@ sensor::sensor(uint16_t sensorEchoPin[4], uint16_t sensorTrigPin[4])
 		pinMode(sensorTrigPin[i], OUTPUT);
 		__sensorEchoPin = sensorEchoPin;
 		__sensorTrigPin = sensorTrigPin;
+
+		sensorCall[i] = millis();
 	}
 }
 
@@ -25,11 +27,13 @@ void sensor::fillSensors(uint8_t code) {
 	{
 		for (int i = 0; i < sizeof(__sensorDataEcho) / sizeof(__sensorDataEcho[0]); i++)
 		{
+			checkAge(i);
 			__sensorDataEcho[i] = echo(__sensorEchoPin[i],__sensorTrigPin[i]);
 		}
 	}
 	else
 	{
+		checkAge(code);
 		__sensorDataEcho[code] = echo(__sensorEchoPin[code], __sensorTrigPin[code]);
 	}
 
@@ -40,8 +44,9 @@ uint8_t sensor::GetSensorData(uint8_t number)
 	return uint8_t(__sensorDataEcho[number]);
 }
 
-int sensor::echo(uint8_t echoPin, uint8_t trigPin)
+uint8_t sensor::echo(uint8_t echoPin, uint8_t trigPin)
 {
+
 	uint16_t maximumRange = 200; // Maximum range needed
 	uint16_t minimumRange = 0; // Minimum range needed
 	uint16_t duration, distance; // Duration used to calculate distance
@@ -73,6 +78,14 @@ int sensor::echo(uint8_t echoPin, uint8_t trigPin)
 	}
 }
 
+void sensor::checkAge(uint8_t number)
+{
+	if (millis() - sensorCall[number] < 10)
+	{
+		delay(10 - millis() - sensorCall[number]);
+	}
+	sensorCall[number] = millis();
+}
 
 
 sensor::~sensor()

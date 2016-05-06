@@ -1,6 +1,7 @@
 #include "ai.h"
 
 #define SENSORCOUNT 1 //also change in sensors.cpp
+#define MINWHILEDELAY delay(60);
 
 //setup sensors
 uint16_t sensorEchoPin[4] = { 8,12,12,12}; //these contain the pins for all the sensors
@@ -39,7 +40,7 @@ void ai::start() {
 	while (true)
 	{
 		Serial.println("CheckSurroundings");
-		Sleep(1000);
+		delay(1000);
 		checkSurroundings(0);
 		
 		if (millis() - snapshot >= 3500000)
@@ -47,7 +48,7 @@ void ai::start() {
 			startLeftCircle();
 			break;
 		}
-		Sleep(5);
+		delay(5);
 	}
 
 	snapshot = millis();
@@ -55,11 +56,11 @@ void ai::start() {
 	while (true)
 	{
 		checkSurroundings(1);
-		if (millis() - snapshot >= 8000)
+		if (millis() - snapshot >= 16000)
 		{
 			break;
 		}
-		Sleep(5);
+		delay(5);
 	}
 
 }
@@ -74,32 +75,28 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 		{
 			if (sensors.GetSensorData(i) < 15)
 			{
-				Serial.println("small distance");
-				Serial.println(sensors.GetSensorData(sensors.SenF));
 				motorStop();
-				Sleep(100);
+				delay(100);
 
 				if (i == sensors.SenF) //determine moving or not maybe?
 				{
 					//turn left or right
 					if (sensors.GetSensorData(sensors.SenL) - sensors.GetSensorData(sensors.SenR) <= 0)
 					{
-						Serial.println("right");
-						Serial.println(sensors.GetSensorData(sensors.SenF));
 						spinRight(200);
 						//turn right
 						while (true)
 						{
 
 							sensors.fillSensors(sensors.SenF);
+							Serial.println(sensors.GetSensorData(sensors.SenF));
+							Serial.println("wut");
 							if (sensors.GetSensorData(sensors.SenF) >= 100)
 							{
-								Sleep(100);
-								Serial.println("FORWARD");
-								Serial.println(sensors.GetSensorData(sensors.SenF));
 								engineForward(255);
 								break;
 							}
+							MINWHILEDELAY
 						}
 					}
 					else
@@ -109,7 +106,7 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 						{
 							//turn left
 							sensors.fillSensors(sensors.SenF);
-							if (sensors.GetSensorData(sensors.SenF) >= 190)
+							if (sensors.GetSensorData(sensors.SenF) >= 100)
 							{
 								engineForward(255);
 								break;
@@ -124,21 +121,27 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 					{
 						spinRight(150);
 						sensors.fillSensors(sensors.SenF);
-						if (sensors.GetSensorData(sensors.SenF >= 190))
+						if (sensors.GetSensorData(sensors.SenF) >= 100)
 						{
 							engineForward(255);
 						}
+						MINWHILEDELAY
 					}
 				}
 				else if(i == sensors.SenR)
 				{
 					//turn left
-					spinLeft(150);
-					sensors.fillSensors(sensors.SenF);
-					if (sensors.GetSensorData(sensors.SenF >= 190))
+					while (true)
 					{
-						engineForward(255);
+						spinLeft(150);
+						sensors.fillSensors(sensors.SenF);
+						if (sensors.GetSensorData(sensors.SenF >= 190))
+						{
+							engineForward(255);
+						}
+						MINWHILEDELAY
 					}
+
 				}
 			}
 		}
