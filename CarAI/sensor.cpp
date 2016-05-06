@@ -1,9 +1,16 @@
-#pragma once
 #include "sensor.h"
+
+#define SENSORCOUNT 4
 
 sensor::sensor(uint16_t sensorEchoPin[4], uint16_t sensorTrigPin[4])
 {
-	for (size_t i = 0; i < sizeof(sensorEchoPin)/sizeof(sensorEchoPin[0]); i++)
+
+	__sensorDataEcho[0] = 200;
+	__sensorDataEcho[1] = 20;
+	__sensorDataEcho[2] = 200;
+	__sensorDataEcho[3] = 200;
+
+	for (size_t i = 0; i < SENSORCOUNT; i++)
 	{
 		pinMode(sensorEchoPin[i], INPUT);
 		pinMode(sensorTrigPin[i], OUTPUT);
@@ -56,13 +63,13 @@ int sensor::echo(uint8_t echoPin, uint8_t trigPin)
 		to indicate "out of range" */
 		Serial.println("maxVal sensor");
 		Serial.println(distance);
-		return int(-1);
+		return uint8_t(255);
 	}
 	else {
 		/* Send the distance to the computer using Serial protocol, and
 		turn LED OFF to indicate successful reading. */
 		Serial.println(distance);
-		return int(distance);
+		return uint8_t(distance);
 	}
 }
 

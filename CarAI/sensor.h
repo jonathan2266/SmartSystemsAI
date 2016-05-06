@@ -17,7 +17,7 @@ public:
 private:
 	uint16_t* __sensorEchoPin;
 	uint16_t* __sensorTrigPin;
-	uint16_t __sensorDataEcho[4] = { -1,-1,-1,-1 };
+	uint8_t __sensorDataEcho[4] = { -1,-1,-1,-1 };
 
 	int echo(uint8_t echoPin, uint8_t trigPin);
 };

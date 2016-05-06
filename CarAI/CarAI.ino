@@ -21,7 +21,7 @@ int currentMotion; //the current movement the car is doing;
 
 void setup() {
 	Serial.begin(9600);
-	Serial.println("setup");
+	//Serial.println("setup");
 	robot.setup();
 
 }

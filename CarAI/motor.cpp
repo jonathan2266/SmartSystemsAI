@@ -30,6 +30,11 @@ void motor::motorCombined(uint8_t speed, uint16_t direction, uint8_t side)
 			digitalWrite(motorPins[1 + side], LOW);
 
 		}
+		else if(speed == 0)
+		{
+			digitalWrite(motorPins[0 + side], LOW);
+			digitalWrite(motorPins[1 + side], LOW);
+		}
 		else
 		{
 			analogWrite(motorPins[0 + side], speed);
@@ -42,6 +47,11 @@ void motor::motorCombined(uint8_t speed, uint16_t direction, uint8_t side)
 		{
 			digitalWrite(motorPins[0 + side], LOW);
 			digitalWrite(motorPins[1 + side], HIGH);
+		}
+		else if (speed == 0)
+		{
+			digitalWrite(motorPins[0 + side], LOW);
+			digitalWrite(motorPins[1 + side], LOW);
 		}
 		else
 		{
