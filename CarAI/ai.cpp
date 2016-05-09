@@ -39,16 +39,14 @@ void ai::start() {
 	
 	while (true)
 	{
-		Serial.println("CheckSurroundings");
-		delay(1000);
+		//Serial.println("CheckSurroundings");
 		checkSurroundings(0);
-		
-		if (millis() - snapshot >= 3500000)
+		delay(50);
+		if (millis() - snapshot >= 3500)
 		{
 			startLeftCircle();
 			break;
 		}
-		delay(5);
 	}
 
 	snapshot = millis();
@@ -56,11 +54,11 @@ void ai::start() {
 	while (true)
 	{
 		checkSurroundings(1);
-		if (millis() - snapshot >= 16000)
+		delay(50);
+		if (millis() - snapshot >= 26000)
 		{
 			break;
 		}
-		delay(5);
 	}
 
 }
@@ -69,7 +67,7 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 
 	sensors.fillSensors(sensors.SenF);
 
-	if (mode == 0)
+	if (mode == 0 || mode == 1)
 	{
 		for (size_t i = 0; i < SENSORCOUNT; i++)
 		{
@@ -93,7 +91,7 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 							Serial.println("wut");
 							if (sensors.GetSensorData(sensors.SenF) >= 100)
 							{
-								engineForward(255);
+								carBackOnRail(mode);
 								break;
 							}
 							MINWHILEDELAY
@@ -108,9 +106,11 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 							sensors.fillSensors(sensors.SenF);
 							if (sensors.GetSensorData(sensors.SenF) >= 100)
 							{
-								engineForward(255);
+
+								carBackOnRail(mode);
 								break;
 							}
+							MINWHILEDELAY
 						}
 					}
 				}
@@ -121,9 +121,9 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 					{
 						spinRight(150);
 						sensors.fillSensors(sensors.SenF);
-						if (sensors.GetSensorData(sensors.SenF) >= 100)
+						if (sensors.GetSensorData(sensors.SenF) >= 100) //and sensors.getsensorsdate(sensors.senL) >= 15
 						{
-							engineForward(255);
+							carBackOnRail(mode);
 						}
 						MINWHILEDELAY
 					}
@@ -135,9 +135,9 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 					{
 						spinLeft(150);
 						sensors.fillSensors(sensors.SenF);
-						if (sensors.GetSensorData(sensors.SenF >= 190))
+						if (sensors.GetSensorData(sensors.SenF) >= 100) //and sensors.getsensorsdate(sensors.senR) >= 15
 						{
-							engineForward(255);
+							carBackOnRail(mode);
 						}
 						MINWHILEDELAY
 					}
@@ -146,15 +146,49 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 			}
 		}
 	}
+	//else if (mode == 1)
+	//{
+	//	for (size_t i = 0; i < SENSORCOUNT; i++)
+	//	{
+	//		if (sensors.GetSensorData(i) < 15)
+	//		{
+	//			motorStop();
+	//			delay(100);
+
+	//			if (i == sensors.SenF)
+	//			{
+
+	//			}
+	//			else if (i == sensors.SenL)
+	//			{
+
+	//			}
+	//			else if(i == sensors.SenR)
+	//			{
+	//					
+	//			}
+	//		}
+	//	}
+
+	//}
+
+}
+
+void ai::carBackOnRail(uint8_t mode) {
+
+	if (mode == 0)
+	{
+		engineForward(255);
+	}
 	else if (mode == 1)
 	{
-
+		startLeftCircle();
 	}
 
 }
 
 void ai::startLeftCircle() {
-	engine.LeftMotor(150, engine.FORWARD);
+	engine.LeftMotor(170, engine.FORWARD);
 	engine.RightMotor(255, engine.FORWARD);
 }
 

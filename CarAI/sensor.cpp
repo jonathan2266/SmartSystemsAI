@@ -6,8 +6,8 @@ sensor::sensor(uint16_t sensorEchoPin[4], uint16_t sensorTrigPin[4])
 {
 
 	__sensorDataEcho[0] = 200;
-	__sensorDataEcho[1] = 20;
-	__sensorDataEcho[2] = 200;
+	__sensorDataEcho[1] = 200;
+	__sensorDataEcho[2] = 20;
 	__sensorDataEcho[3] = 200;
 
 	for (size_t i = 0; i < SENSORCOUNT; i++)

@@ -19,6 +19,7 @@ private:
 	void spinLeft(uint8_t speed);
 	void spinRight(uint8_t speed);
 	void engineForward(uint8_t speed);
+	void carBackOnRail(uint8_t mode);
 
 	uint32_t snapshot;
 	uint8_t sensorData[4] = {255,255,255,255};
