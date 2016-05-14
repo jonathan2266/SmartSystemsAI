@@ -22,8 +22,9 @@ int currentMotion; //the current movement the car is doing;
 void setup() {
 	Serial.begin(9600);
 	//Serial.println("setup");
+	
 	robot.setup();
-
+	delay(5000);
 }
 
 // the loop function runs over and over again until power down or reset

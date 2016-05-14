@@ -5,7 +5,7 @@
 
 //setup sensors
 uint16_t sensorEchoPin[4] = { 8,12,12,12}; //these contain the pins for all the sensors
-uint16_t sensorTrigPin[4] = { 9,12,12,12};
+uint16_t sensorTrigPin[4] = { 53,12,12,12}; //9
 
 uint32_t snapshot;
 
@@ -55,7 +55,7 @@ void ai::start() {
 	{
 		checkSurroundings(1);
 		delay(50);
-		if (millis() - snapshot >= 26000)
+		if (millis() - snapshot >= 27000)
 		{
 			break;
 		}
