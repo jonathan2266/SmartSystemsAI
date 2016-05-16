@@ -4,8 +4,8 @@
 #define MINWHILEDELAY delay(60);
 
 //setup sensors
-uint16_t sensorEchoPin[4] = { 8,12,12,12}; //these contain the pins for all the sensors
-uint16_t sensorTrigPin[4] = { 53,12,12,12}; //9
+uint16_t sensorEchoPin[4] = { 2,13,4,8}; //these contain the pins for all the sensors
+uint16_t sensorTrigPin[4] = { 47,51,49,8}; //9
 
 uint32_t snapshot;
 
@@ -24,7 +24,7 @@ void ai::setup() {
 	engine.setup();
 	motorStop();
 
-	sensors.fillSensors(sensors.SenF);
+	sensors.fillSensors(5);
 	for (size_t i = 0; i < SENSORCOUNT; i++)
 	{
 		sensorData[i] = sensors.GetSensorData(i); //maybe
@@ -39,7 +39,7 @@ void ai::start() {
 	
 	while (true)
 	{
-		//Serial.println("CheckSurroundings");
+		Serial.println("CheckSurroundings");
 		checkSurroundings(0);
 		delay(50);
 		if (millis() - snapshot >= 3500)
@@ -64,8 +64,9 @@ void ai::start() {
 }
 
 void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
-
-	sensors.fillSensors(sensors.SenF);
+	
+	Serial.println("entering checksurroundings");
+	sensors.fillSensors(5);
 
 	if (mode == 0 || mode == 1)
 	{
