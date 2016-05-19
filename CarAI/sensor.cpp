@@ -1,6 +1,6 @@
 #include "sensor.h"
 
-#define SENSORCOUNT 4
+#define SENSORCOUNT 3
 
 sensor::sensor(uint16_t sensorEchoPin[4], uint16_t sensorTrigPin[4])
 {
@@ -20,7 +20,7 @@ void sensor::fillSensors(uint8_t code) {
 	//echo has to be replaced by echoFront/echoSide
 	if (code == 5)
 	{
-		for (int i = 0; i < sizeof(__sensorDataEcho) / sizeof(__sensorDataEcho[0]); i++)
+		for (int i = 0; i < SENSORCOUNT; i++)
 		{
 			checkAge(i);
 			__sensorDataEcho[i] = echo(__sensorEchoPin[i],__sensorTrigPin[i]);
@@ -72,7 +72,10 @@ void sensor::checkAge(uint8_t number)
 {
 	if (millis() - sensorCall[number] < 10)
 	{
-		delay(10 - millis() - sensorCall[number]);
+		/*Serial.print("delay for ");
+		Serial.println(10 - millis() - sensorCall[number]);
+		delay(10 - millis() - sensorCall[number]);*/
+		delay(10);
 	}
 	sensorCall[number] = millis();
 }

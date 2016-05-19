@@ -1,6 +1,6 @@
 #include "ai.h"
 
-#define SENSORCOUNT 1 //also change in sensors.cpp
+#define SENSORCOUNT 3 //also change in sensors.cpp
 #define MINWHILEDELAY delay(60);
 
 //setup sensors
@@ -39,11 +39,11 @@ void ai::start() {
 	
 	while (true)
 	{
-		Serial.println("CheckSurroundings");
 		checkSurroundings(0);
-		delay(50);
-		if (millis() - snapshot >= 3500)
+		delay(20);
+		if (millis() - snapshot >= 5500)
 		{
+			Serial.println("startLeftCircle");
 			startLeftCircle();
 			break;
 		}
@@ -54,7 +54,7 @@ void ai::start() {
 	while (true)
 	{
 		checkSurroundings(1);
-		delay(50);
+		delay(20);
 		if (millis() - snapshot >= 27000)
 		{
 			break;
@@ -72,13 +72,13 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 	{
 		for (size_t i = 0; i < SENSORCOUNT; i++)
 		{
-			if (sensors.GetSensorData(i) < 15)
+			if (sensors.GetSensorData(i) < 12)
 			{
 				motorStop();
-				delay(100);
 
-				if (i == sensors.SenF) //determine moving or not maybe?
+				if (i == sensors.SenF)
 				{
+					Serial.println("SenF warning");
 					//turn left or right
 					if (sensors.GetSensorData(sensors.SenL) - sensors.GetSensorData(sensors.SenR) <= 0)
 					{
@@ -86,10 +86,8 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 						//turn right
 						while (true)
 						{
-
 							sensors.fillSensors(sensors.SenF);
 							Serial.println(sensors.GetSensorData(sensors.SenF));
-							Serial.println("wut");
 							if (sensors.GetSensorData(sensors.SenF) >= 100)
 							{
 								carBackOnRail(mode);
@@ -105,6 +103,8 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 						{
 							//turn left
 							sensors.fillSensors(sensors.SenF);
+							Serial.println(sensors.GetSensorData(sensors.SenF));
+							Serial.println("wut");
 							if (sensors.GetSensorData(sensors.SenF) >= 100)
 							{
 
@@ -117,28 +117,32 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 				}
 				else if(i == sensors.SenL)
 				{
+					Serial.println("senL warning");
 					//turn right
 					while (true)
 					{
-						spinRight(150);
-						sensors.fillSensors(sensors.SenF);
-						if (sensors.GetSensorData(sensors.SenF) >= 100) //and sensors.getsensorsdate(sensors.senL) >= 15
+						spinRight(200);
+						sensors.fillSensors(5);
+						if (sensors.GetSensorData(sensors.SenF) >= 100 && sensors.GetSensorData(sensors.SenL) >= 12) //and sensors.getsensorsdate(sensors.senL) >= 15
 						{
 							carBackOnRail(mode);
+							break;
 						}
 						MINWHILEDELAY
 					}
 				}
 				else if(i == sensors.SenR)
 				{
+					Serial.println("senR warning");
 					//turn left
 					while (true)
 					{
-						spinLeft(150);
-						sensors.fillSensors(sensors.SenF);
-						if (sensors.GetSensorData(sensors.SenF) >= 100) //and sensors.getsensorsdate(sensors.senR) >= 15
+						spinLeft(200);
+						sensors.fillSensors(5);
+						if (sensors.GetSensorData(sensors.SenF) >= 100 && sensors.GetSensorData(sensors.SenR) >= 12) //and sensors.getsensorsdate(sensors.senR) >= 15
 						{
 							carBackOnRail(mode);
+							break;
 						}
 						MINWHILEDELAY
 					}
@@ -147,32 +151,6 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 			}
 		}
 	}
-	//else if (mode == 1)
-	//{
-	//	for (size_t i = 0; i < SENSORCOUNT; i++)
-	//	{
-	//		if (sensors.GetSensorData(i) < 15)
-	//		{
-	//			motorStop();
-	//			delay(100);
-
-	//			if (i == sensors.SenF)
-	//			{
-
-	//			}
-	//			else if (i == sensors.SenL)
-	//			{
-
-	//			}
-	//			else if(i == sensors.SenR)
-	//			{
-	//					
-	//			}
-	//		}
-	//	}
-
-	//}
-
 }
 
 void ai::carBackOnRail(uint8_t mode) {
@@ -189,7 +167,7 @@ void ai::carBackOnRail(uint8_t mode) {
 }
 
 void ai::startLeftCircle() {
-	engine.LeftMotor(170, engine.FORWARD);
+	engine.LeftMotor(200, engine.FORWARD);
 	engine.RightMotor(255, engine.FORWARD);
 }
 
@@ -199,12 +177,12 @@ void ai::motorStop() {
 }
 
 void ai::spinLeft(uint8_t speed) {
-	engine.LeftMotor(speed, engine.BACKWARDS);
 	engine.RightMotor(speed, engine.FORWARD);
+	engine.LeftMotor(speed, engine.BACKWARDS);
 }
 
 void ai::spinRight(uint8_t speed) {
-	engine.LeftMotor(speed, engine.FORWARD);
+	engine.LeftMotor(250, engine.FORWARD);
 	engine.RightMotor(speed, engine.BACKWARDS);
 }
 
