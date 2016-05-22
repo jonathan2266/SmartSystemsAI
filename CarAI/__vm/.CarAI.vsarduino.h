@@ -12,7 +12,7 @@
 #define _VSARDUINO_H_
 #define printf iprintf
 #define F_CPU 84000000L
-#define ARDUINO 10608
+#define ARDUINO 10609
 #define ARDUINO_SAM_DUE
 #define ARDUINO_ARCH_SAM
 #define __SAM3X8E__
@@ -102,13 +102,17 @@ extern "C" void __cxa_pure_virtual() {;}
 #define portOutputRegister(P)
 #define portInputRegister(P)
 #define portModeRegister(P)
-#include <..\CarAI\CarAI.ino>
-#include <..\CarAI\ai.cpp>
-#include <..\CarAI\ai.h>
-#include <..\CarAI\motor.cpp>
-#include <..\CarAI\motor.h>
-#include <..\CarAI\sensor.cpp>
-#include <..\CarAI\sensor.h>
-#include <..\CarAI\servo.cpp>
-#include <..\CarAI\servo.h>
+
+//
+//
+
+#include <CarAI.ino>
+#include <ai.cpp>
+#include <ai.h>
+#include <motor.cpp>
+#include <motor.h>
+#include <sensor.cpp>
+#include <sensor.h>
+#include <servo.cpp>
+#include <servo.h>
 #endif

@@ -11,6 +11,9 @@ uint32_t snapshot;
 
 sensor sensors(sensorEchoPin, sensorTrigPin); //giving them to the class
 
+uint8_t leftWarningCount = 0;
+uint32_t leftWallHangingTime;
+
 //setup engine
 motor engine(6, 5, 10, 11);
 
@@ -22,13 +25,15 @@ ai::ai()
 void ai::setup() {
 
 	engine.setup();
-	motorStop();
+	engineStop();
 
 	sensors.fillSensors(5);
 	for (size_t i = 0; i < SENSORCOUNT; i++)
 	{
 		sensorData[i] = sensors.GetSensorData(i); //maybe
 	}
+
+	leftWallHangingTime = millis();
 }
 
 void ai::start() {
@@ -68,13 +73,23 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 	Serial.println("entering checksurroundings");
 	sensors.fillSensors(5);
 
+	if (sensors.GetSensorData(sensors.SenF) < 12 && sensors.GetSensorData(sensors.SenL) < 12 && sensors.GetSensorData(sensors.SenR) < 12)
+	{
+		Serial.println("lele");
+		engineStop();
+		mode = 3;
+	}
+
 	if (mode == 0 || mode == 1)
 	{
 		for (size_t i = 0; i < SENSORCOUNT; i++)
 		{
+
+			// add function to check all sensors to see if the car is not locked in position
+
 			if (sensors.GetSensorData(i) < 12)
 			{
-				motorStop();
+				engineStop();
 
 				if (i == sensors.SenF)
 				{
@@ -117,7 +132,8 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 				}
 				else if(i == sensors.SenL)
 				{
-					Serial.println("senL warning");
+					Serial.println("senL warning");  // if sensor left ois triggered 5 times in x amount of time do a 180 + degree turn to run away from the wall
+					avoidLeftWallhanging();
 					//turn right
 					while (true)
 					{
@@ -166,12 +182,30 @@ void ai::carBackOnRail(uint8_t mode) {
 
 }
 
+void ai::avoidLeftWallhanging()
+{
+	leftWarningCount++;
+	if (leftWarningCount > 5)
+	{
+		if (millis() - leftWallHangingTime < 7000)
+		{
+			spinRight(255);
+			delay(3500);
+		}
+		else
+		{
+			leftWarningCount = 0;
+			leftWallHangingTime = millis();
+		}
+	}
+}
+
 void ai::startLeftCircle() {
 	engine.LeftMotor(200, engine.FORWARD);
 	engine.RightMotor(255, engine.FORWARD);
 }
 
-void ai::motorStop() {
+void ai::engineStop() {
 	engine.LeftMotor(0, engine.FORWARD);
 	engine.RightMotor(0, engine.FORWARD);
 }
