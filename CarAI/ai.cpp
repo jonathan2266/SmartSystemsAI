@@ -16,16 +16,17 @@ uint32_t leftWallHangingTime;
 
 //setup engine
 motor engine(6, 5, 10, 11);
+//setup servo
+servoCar servo(7);
 
-ai::ai()
-{
-
-}
+bool servoDotted = false;
 
 void ai::setup() {
 
 	engine.setup();
 	engineStop();
+
+	//servo.line(servoDotted);
 
 	sensors.fillSensors(5);
 	for (size_t i = 0; i < SENSORCOUNT; i++)
@@ -79,6 +80,8 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 		engineStop();
 		mode = 3;
 	}
+
+	//servo.line(servoDotted);
 
 	if (mode == 0 || mode == 1)
 	{
@@ -165,6 +168,7 @@ void ai::checkSurroundings(uint8_t mode) { //mode 0 straight mode 1 circle
 
 				}
 			}
+			//servoDotted = !servoDotted;
 		}
 	}
 }
